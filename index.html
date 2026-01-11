@@ -33,6 +33,7 @@
             <h2>Бургеры</h2>
             <div class="menu-list">
                 <article class="menu-item">
+                    <img src="img/burger-classic.jpg" alt="Классический бургер" class="item-photo">
                     <div>
                         <h3>Классический бургер</h3>
                         <p class="desc">Говяжья котлета, сыр чеддер, маринованный огурец, фирменный соус.</p>
@@ -41,6 +42,7 @@
                 </article>
 
                 <article class="menu-item">
+                    <img src="img/burger-double.jpg" alt="Дабл чиз" class="item-photo">
                     <div>
                         <h3>Дабл чиз</h3>
                         <p class="desc">Двойная котлета, двойной сыр, карамелизированный лук.</p>
@@ -49,6 +51,7 @@
                 </article>
 
                 <article class="menu-item">
+                    <img src="img/burger-spicy.jpg" alt="Спайси бургер" class="item-photo">
                     <div>
                         <h3>Спайси бургер</h3>
                         <p class="desc">Острая котлета, халапеньо, соус чили, салат айсберг.</p>
@@ -62,105 +65,4 @@
         <section class="menu-section" id="snacks">
             <h2>Снэки</h2>
             <div class="menu-list">
-                <article class="menu-item">
-                    <div>
-                        <h3>Картофель фри</h3>
-                        <p class="desc">Подается с кетчупом или сырным соусом.</p>
-                    </div>
-                    <div class="price">1 200 ₸</div>
-                </article>
-
-                <article class="menu-item">
-                    <div>
-                        <h3>Куриные крылышки</h3>
-                        <p class="desc">Острые или барбекю на выбор.</p>
-                    </div>
-                    <div class="price">2 300 ₸</div>
-                </article>
-            </div>
-        </section>
-
-        <!-- Напитки -->
-        <section class="menu-section" id="drinks">
-            <h2>Напитки</h2>
-            <div class="menu-list">
-                <article class="menu-item">
-                    <div>
-                        <h3>Кола / Фанта / Спрайт</h3>
-                        <p class="desc">0.5 л</p>
-                    </div>
-                    <div class="price">600 ₸</div>
-                </article>
-
-                <article class="menu-item">
-                    <div>
-                        <h3>Домашний лимонад</h3>
-                        <p class="desc">Лимон, мята, цитрусы.</p>
-                    </div>
-                    <div class="price">1 200 ₸</div>
-                </article>
-
-                <article class="menu-item">
-                    <div>
-                        <h3>Американо / Латте</h3>
-                        <p class="desc">Свежемолотый кофе.</p>
-                    </div>
-                    <div class="price">900 ₸</div>
-                </article>
-            </div>
-        </section>
-
-        <!-- Десерты -->
-        <section class="menu-section" id="desserts">
-            <h2>Десерты</h2>
-            <div class="menu-list">
-                <article class="menu-item">
-                    <div>
-                        <h3>Чизкейк Нью-Йорк</h3>
-                        <p class="desc">Классический сливочный чизкейк.</p>
-                    </div>
-                    <div class="price">1 800 ₸</div>
-                </article>
-
-                <article class="menu-item">
-                    <div>
-                        <h3>Брауни</h3>
-                        <p class="desc">Шоколадный десерт с хрустящей корочкой.</p>
-                    </div>
-                    <div class="price">1 600 ₸</div>
-                </article>
-            </div>
-        </section>
-    </main>
-
-    <footer class="footer">
-        <div>
-            <p class="footer-title">Street Burger</p>
-            <p>г. Астана, ул. Примерная, 10</p>
-            <p>Ежедневно: 10:00 – 23:00</p>
-        </div>
-        <div class="footer-meta">
-            <p>Wi‑Fi: StreetBurgerFree</p>
-            <p>Instagram: @streetburger.kz</p>
-        </div>
-    </footer>
-
-    <script>
-        const navButtons = document.querySelectorAll('.nav-btn');
-        const sections = document.querySelectorAll('.menu-section');
-
-        navButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const target = btn.getAttribute('data-target');
-
-                navButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-
-                sections.forEach(section => {
-                    section.classList.toggle('active', section.id === target);
-                });
-            });
-        });
-    </script>
-</body>
-</html>
+                <article c
