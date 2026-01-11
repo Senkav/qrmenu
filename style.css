@@ -112,13 +112,23 @@ body {
     gap: 8px;
 }
 
+/* Карточка блюда с фото */
+
 .menu-item {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    align-items: center;
     gap: 10px;
     padding: 10px 10px;
     border-radius: 12px;
     background: #181818;
+}
+
+.item-photo {
+    width: 64px;
+    height: 64px;
+    border-radius: 12px;
+    object-fit: cover;
 }
 
 .menu-item h3 {
