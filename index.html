@@ -99,7 +99,6 @@
         }
         .cart-count { position: absolute; top: 0; right: 0; background: #fff; color: #000; font-size: 13px; font-weight: 900; padding: 4px 10px; border-radius: 14px; border: 2px solid var(--accent); }
 
-        /* ИСПРАВЛЕННЫЕ МОДАЛКИ */
         .modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.85);
             display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(15px);
@@ -123,7 +122,28 @@
         input, textarea { width: 100%; padding: 15px; border-radius: 15px; border: 1px solid #3d342f; background: #1a1614; color: #fff; margin-bottom: 12px; font-size: 16px; }
         .close-btn { width: 100%; padding: 16px; background: var(--accent); border: none; border-radius: 18px; color: var(--bg-dark); font-weight: 800; cursor: pointer; margin-top: 10px; }
         
-        .order-type-btn { padding: 12px; border-radius: 12px; border: 1px solid var(--accent); cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .order-type-btn { padding: 12px; border-radius: 12px; border: 1px solid var(--accent); cursor: pointer; font-weight: bold; transition: 0.3s; text-align: center; }
+
+        /* Стили предупреждения об оплате */
+        .payment-warning {
+            border: 1px dashed var(--accent);
+            background: rgba(212, 140, 86, 0.1);
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            color: var(--accent-light);
+            margin: 15px 0;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .social-subtitle {
+            font-size: 14px;
+            color: #b5a499;
+            text-align: center;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body>
@@ -149,24 +169,24 @@
 
 <div class="modal" id="socialModal" onclick="closeModal('socialModal')">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <h2 id="socTitle" style="color: var(--accent-light); text-align:center;"></h2>
-        <p id="socDesc" style="margin-top:15px; text-align:center; opacity: 0.9;"></p>
+        <h2 id="socialTitle" style="color: var(--accent-light); text-align:center; margin-bottom:10px;">Социальные сети</h2>
+        <p id="socialSubtitle" class="social-subtitle">Хотите акций и новости о ресторане? Переходите в наши социальные сети!</p>
         <div class="social-links">
-            <button onclick="callStaff()" class="soc-item call-btn">🛎 ВЫЗВАТЬ ОФИЦИАНТА</button>
-            <a href="#" target="_blank" class="soc-item inst">Instagram</a>
-            <a href="#" target="_blank" class="soc-item tt">TikTok</a>
-            <a href="#" target="_blank" class="soc-item tg">Telegram</a>
+            <button onclick="callStaff()" id="btnWaiter" class="soc-item call-btn">🛎 ВЫЗВАТЬ ОФИЦИАНТА</button>
+            <a href="https://www.instagram.com/tengrinewskz/" target="_blank" class="soc-item inst">Instagram</a>
+            <a href="https://www.tiktok.com/@tengrinewskz" target="_blank" class="soc-item tt">TikTok</a>
+            <a href="https://t.me/s/tengrinews" target="_blank" class="soc-item tg">Telegram</a>
         </div>
-        <button class="close-btn" onclick="closeModal('socialModal')">ОК</button>
+        <button class="close-btn" id="socialCloseBtn" onclick="closeModal('socialModal')">ОК</button>
     </div>
 </div>
 
 <div class="modal" id="cartModal" onclick="closeModal('cartModal')">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <h2 id="cartTitle" style="text-align:center; margin-bottom:20px; color: var(--accent-light);">Себет / Корзина</h2>
+        <h2 id="cartTitle" style="text-align:center; margin-bottom:20px; color: var(--accent-light);">Корзина</h2>
         <div id="cartItems"></div>
         <div id="cartFooter"></div>
-        <button class="close-btn" style="background: #3d342f; color: #fff;" onclick="closeModal('cartModal')">Закрыть</button>
+        <button class="close-btn" id="cartCloseBtn" style="background: #3d342f; color: #fff;" onclick="closeModal('cartModal')">Закрыть</button>
     </div>
 </div>
 
@@ -180,7 +200,10 @@ const menuData = {
     ru: {
         categories: { 
             all: "ВСЕ", total: "Итого (+10% обслуж.):", cart: "Корзина", close: "Закрыть", order: "Заказать через WhatsApp",
-            table: "№ Стола:", comment: "Комментарий (например: без лука)", empty: "Корзина пуста"
+            table: "№ Стола:", phone: "Ваш телефон:", name: "Ваше имя:", comment: "Комментарий (например: без лука)", empty: "Корзина пуста",
+            socials: "Социальные сети", socialDesc: "Хотите акций и новости о ресторане? Переходите в наши социальные сети!",
+            waiter: "🛎 ВЫЗВАТЬ ОФИЦИАНТА", paymentWarn: "⚠️ Заказ принимается только после подтверждения оплаты!",
+            inHouse: "🍽 В заведении", takeAway: "🥡 На вынос"
         },
         items: {
             "ШАШЛЫКИ": [
@@ -298,13 +321,23 @@ const menuData = {
         }
     }
 };
-
 function switchLang(lang) {
     currentLang = lang;
     document.querySelectorAll('.lang-switch button').forEach(b => b.classList.remove('active'));
     document.getElementById('btn-' + lang).classList.add('active');
-    document.getElementById('socTitle').textContent = menuData[lang].socTitle;
-    document.getElementById('socDesc').textContent = menuData[lang].socDesc;
+    
+    const labels = menuData[currentLang].categories;
+    
+    // Исправляем отвал текстов в модалке соцсетей
+    document.getElementById('socialTitle').textContent = labels.socials;
+    document.getElementById('socialSubtitle').textContent = labels.socialDesc;
+    document.getElementById('btnWaiter').textContent = labels.waiter;
+    document.getElementById('socialCloseBtn').textContent = "OK";
+    
+    // Исправляем тексты в корзине
+    document.getElementById('cartTitle').textContent = labels.cart;
+    document.getElementById('cartCloseBtn').textContent = labels.close;
+
     render();
 }
 
@@ -337,7 +370,7 @@ function render() {
                 const div = document.createElement("div");
                 div.className = "menu-item";
                 div.innerHTML = `<span>${item[0]}</span><b>${item[1]} ₸</b>`;
-                div.onclick = () => addToCart(item);
+                div.onclick = () => { cart.push(item); document.getElementById("cartCount").textContent = cart.length; };
                 grid.appendChild(div);
             });
             menuC.appendChild(sec);
@@ -345,17 +378,12 @@ function render() {
     });
 }
 
-function addToCart(item) {
-    cart.push(item);
-    document.getElementById("cartCount").textContent = cart.length;
-}
-
 function openSocial() { document.getElementById('socialModal').style.display = 'flex'; }
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
 function callStaff() {
     const table = prompt(currentLang === 'ru' ? "Введите ваш стол:" : "Үстеліңізді енгізіңіз:");
-    if(table) window.open(`https://wa.me/${PHONE_NUMBER}?text=🔔 ВЫЗОВ ОФИЦИАНТА. Стол №${table}`);
+    if(table) window.open(`https://wa.me/${PHONE_NUMBER}?text=🛎 ВЫЗОВ ОФИЦИАНТА. Стол №${table}`);
 }
 
 document.getElementById("cartBtn").onclick = () => {
@@ -363,30 +391,41 @@ document.getElementById("cartBtn").onclick = () => {
     const foot = document.getElementById("cartFooter");
     const labels = menuData[currentLang].categories;
     list.innerHTML = ""; let total = 0;
+    
+    if (cart.length === 0) {
+        list.innerHTML = `<p style="text-align:center; padding:20px;">${labels.empty}</p>`;
+        foot.innerHTML = "";
+        document.getElementById('cartModal').style.display = 'flex';
+        return;
+    }
+
     cart.forEach((item, i) => {
         total += item[1];
         list.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px; background:rgba(0,0,0,0.2); padding:10px; border-radius:12px;">
             <span>${item[0]}</span>
-            <b>${item[1]} ₸ <span style="color:#ff4444; margin-left:10px; cursor:pointer;" onclick="cart.splice(${i},1); document.getElementById('cartBtn').click();">✕</span></b>
+            <b>${item[1]} ₸ <span style="color:#ff4444; margin-left:10px; cursor:pointer;" onclick="cart.splice(${i},1); document.getElementById('cartCount').textContent = cart.length; document.getElementById('cartBtn').click();">✕</span></b>
         </div>`;
     });
 
     window.updateFooter = (isTakeAway) => {
-        const tax = isTakeAway ? 1 : 1.1;
-        const final = Math.floor(total * tax);
+        const final = Math.floor(total * (isTakeAway ? 1 : 1.1));
         const taxText = isTakeAway ? (currentLang === 'ru' ? "Итого (на вынос):" : "Жиыны (алып кету):") : labels.total;
+        const dynamicPlaceholder = isTakeAway ? labels.phone : labels.table;
 
         foot.innerHTML = `
             <div style="margin-top:15px; border-top:1px solid #3d342f; padding-top:15px">
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
-                    <button onclick="updateFooter(false)" class="order-type-btn" style="background:${!isTakeAway ? 'var(--accent)' : 'transparent'}; color:${!isTakeAway ? 'var(--bg-dark)' : '#fff'}">🍽 В заведении</button>
-                    <button onclick="updateFooter(true)" class="order-type-btn" style="background:${isTakeAway ? 'var(--accent)' : 'transparent'}; color:${isTakeAway ? 'var(--bg-dark)' : '#fff'}">🥡 На вынос</button>
+                    <button onclick="updateFooter(false)" class="order-type-btn" style="background:${!isTakeAway ? 'var(--accent)' : 'transparent'}; color:${!isTakeAway ? 'var(--bg-dark)' : '#fff'}">${labels.inHouse}</button>
+                    <button onclick="updateFooter(true)" class="order-type-btn" style="background:${isTakeAway ? 'var(--accent)' : 'transparent'}; color:${isTakeAway ? 'var(--bg-dark)' : '#fff'}">${labels.takeAway}</button>
                 </div>
-                <input type="text" id="table" placeholder="${isTakeAway ? (currentLang === 'ru' ? 'Ваш телефон' : 'Телефоныңыз') : labels.table}">
-                <textarea id="comment" placeholder="${labels.comment}"></textarea>
-                <div style="background:rgba(212,140,86,0.1); border:1px dashed var(--accent); padding:10px; border-radius:10px; font-size:12px; text-align:center; color:var(--accent-light); margin-bottom:15px;">
-                    ⚠️ Заказ принимается только после подтверждения оплаты!
+                <input type="text" id="uName" placeholder="${labels.name}">
+                <input type="text" id="uInfo" placeholder="${dynamicPlaceholder}">
+                <textarea id="uComment" placeholder="${labels.comment}"></textarea>
+                
+                <div class="payment-warning">
+                    ${labels.paymentWarn}
                 </div>
+
                 <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.1em; margin-bottom:15px;">
                     <span>${taxText}</span><span>${final} ₸</span>
                 </div>
@@ -398,17 +437,34 @@ document.getElementById("cartBtn").onclick = () => {
 };
 
 function sendWA(isOut, finalPrice) {
-    const t = document.getElementById('table').value || '--';
-    const c = document.getElementById('comment').value || '--';
-    let msg = `*НОВЫЙ ЗАКАЗ BARACAT*\nТип: ${isOut ? '🥡 НА ВЫНОС' : '🍽 В ЗАВЕДЕНИИ'}\n📍 ${isOut ? 'Тел' : 'Стол'}: ${t}\n💬 Коммент: ${c}\n\n`;
+    const name = document.getElementById('uName').value || 'Гость';
+    const info = document.getElementById('uInfo').value || '--';
+    const comm = document.getElementById('uComment').value || '--';
+    
+    const orderId = Math.floor(1000 + Math.random() * 9000);
+    const now = new Date();
+    const gmt5Time = new Date(now.getTime() + (now.getTimezoneOffset() + 300) * 60000)
+                     .toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'});
+
+    let msg = `*ЗАКАЗ №${orderId}* [${gmt5Time}]\n`;
+    msg += `--------------------------\n`;
+    msg += `Тип: ${isOut ? '🥡 НА ВЫНОС' : '🍽 В ЗАВЕДЕНИИ'}\n`;
+    msg += `👤 Имя: ${name}\n`;
+    msg += `📍 ${isOut ? 'Тел' : 'Стол'}: ${info}\n`;
+    msg += `💬 Коммент: ${comm}\n`;
+    msg += `--------------------------\n`;
     cart.forEach((item, i) => { msg += `${i+1}. ${item[0]} - ${item[1]} ₸\n`; });
-    msg += `\n*ИТОГО К ОПЛАТЕ: ${finalPrice} ₸*`;
+    msg += `--------------------------\n`;
+    msg += `*ИТОГО К ОПЛАТЕ: ${finalPrice} ₸*`;
+    
     window.open(`https://wa.me/${PHONE_NUMBER}?text=${encodeURIComponent(msg)}`);
 }
 
 tsParticles.load("tsparticles", {
     particles: { number: { value: 15 }, color: { value: "#d48c56" }, opacity: { value: 0.2 }, size: { value: 2 }, move: { enable: true, speed: 0.6, direction: "top" } }
 });
+
+// Инициализация при загрузке
 switchLang('ru');
 </script>
 </body>
