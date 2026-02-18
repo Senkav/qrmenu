@@ -24,7 +24,6 @@
             min-height: 100vh;
         }
 
-        /* ФОН (Слой -2) */
         body::before {
             content: "";
             position: fixed;
@@ -37,7 +36,6 @@
             z-index: -2;
         }
 
-        /* ЗАТЕМНЕНИЕ (Слой -1) */
         body::after {
             content: "";
             position: fixed;
@@ -49,7 +47,6 @@
 
         #tsparticles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 
-        /* ШАПКА */
         .header { text-align: center; padding: 40px 20px; position: relative; z-index: 10; }
         .logo { font-size: clamp(34px, 8vw, 52px); font-weight: 900; letter-spacing: 5px; color: var(--accent-light); text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
 
@@ -61,7 +58,6 @@
             background: rgba(26, 22, 20, 0.5); transition: var(--transition); backdrop-filter: blur(5px);
             z-index: 11;
         }
-        .info-btn:hover { background: var(--accent); color: var(--bg-dark); }
 
         .lang-switch { margin-top: 15px; position: relative; z-index: 10; }
         .lang-switch button {
@@ -70,7 +66,6 @@
         }
         .lang-switch button.active { background: var(--accent); color: var(--bg-dark); }
 
-        /* НАВИГАЦИЯ */
         .nav { 
             display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; 
             margin: 25px auto; max-width: 1000px; padding: 0 10px; position: relative; z-index: 10;
@@ -82,7 +77,6 @@
         }
         .nav button.active { border-color: var(--accent-light); color: var(--accent-light); background: rgba(212, 140, 86, 0.2); }
 
-        /* МЕНЮ */
         .container { max-width: 1200px; margin: auto; padding: 10px 20px 120px; position: relative; z-index: 5; }
         .category h2 { border-left: 5px solid var(--accent); padding-left: 15px; margin: 40px 0 20px; text-transform: uppercase; font-size: 1.1rem; color: var(--accent-light); }
         .grid { display: grid; gap: 12px; }
@@ -95,42 +89,41 @@
             backdrop-filter: blur(8px);
         }
         .menu-item:hover { border-color: var(--accent); transform: translateY(-2px); }
-        .menu-item b { color: var(--accent-light); }
 
-        /* КОРЗИНА (Слой 100) */
         .cart {
             position: fixed; bottom: 30px; right: 30px; width: 75px; height: 75px;
             border-radius: 50%; background: var(--accent);
             display: flex; justify-content: center; align-items: center;
             cursor: pointer; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: 0.3s;
         }
-        .cart:active { transform: scale(0.9); }
         .cart-count { position: absolute; top: 0; right: 0; background: #fff; color: #000; font-size: 13px; font-weight: 900; padding: 4px 10px; border-radius: 14px; border: 2px solid var(--accent); }
 
-        /* МОДАЛЬНЫЕ ОКНА (Слой 1000) */
+        /* ИСПРАВЛЕННЫЕ МОДАЛКИ */
         .modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.85);
             display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(15px);
         }
         .modal-content {
             background: #2b2420; padding: 30px; border-radius: 30px;
-            width: 92%; max-width: 440px; border: 1px solid var(--accent); 
+            width: 92%; max-width: 420px; border: 1px solid var(--accent); 
             max-height: 85vh; overflow-y: auto; position: relative;
         }
 
-        /* СОЦСЕТИ - ИСПРАВЛЕННЫЕ ЦВЕТА */
         .social-links { display: flex; flex-direction: column; gap: 12px; margin: 20px 0; }
         .soc-item {
-            display: flex; align-items: center; justify-content: center; gap: 10px;
+            display: flex; align-items: center; justify-content: center;
             padding: 16px; border-radius: 18px; text-decoration: none; color: #fff; font-weight: bold; transition: 0.3s;
         }
         .inst { background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); }
         .tt { background: #000; border: 1px solid #444; }
         .tg { background: #0088cc; }
+        .call-btn { background: #ff4444; color: #fff; border: none; font-size: 16px; cursor: pointer; }
 
         input, textarea { width: 100%; padding: 15px; border-radius: 15px; border: 1px solid #3d342f; background: #1a1614; color: #fff; margin-bottom: 12px; font-size: 16px; }
         .close-btn { width: 100%; padding: 16px; background: var(--accent); border: none; border-radius: 18px; color: var(--bg-dark); font-weight: 800; cursor: pointer; margin-top: 10px; }
+        
+        .order-type-btn { padding: 12px; border-radius: 12px; border: 1px solid var(--accent); cursor: pointer; font-weight: bold; transition: 0.3s; }
     </style>
 </head>
 <body>
@@ -156,14 +149,15 @@
 
 <div class="modal" id="socialModal" onclick="closeModal('socialModal')">
     <div class="modal-content" onclick="event.stopPropagation()">
-        <h2 id="socTitle" style="color: var(--accent-light); text-align:center;">Акции и новости</h2>
-        <p id="socDesc" style="margin-top:15px; text-align:center; opacity: 0.9; line-height: 1.5;">Следите за нашими новостями в социальных сетях!</p>
+        <h2 id="socTitle" style="color: var(--accent-light); text-align:center;"></h2>
+        <p id="socDesc" style="margin-top:15px; text-align:center; opacity: 0.9;"></p>
         <div class="social-links">
-            <a href="https://instagram.com" target="_blank" class="soc-item inst">Instagram</a>
-            <a href="https://tiktok.com" target="_blank" class="soc-item tt">TikTok</a>
-            <a href="https://t.me" target="_blank" class="soc-item tg">Telegram</a>
+            <button onclick="callStaff()" class="soc-item call-btn">🛎 ВЫЗВАТЬ ОФИЦИАНТА</button>
+            <a href="#" target="_blank" class="soc-item inst">Instagram</a>
+            <a href="#" target="_blank" class="soc-item tt">TikTok</a>
+            <a href="#" target="_blank" class="soc-item tg">Telegram</a>
         </div>
-        <button class="close-btn" onclick="closeModal('socialModal')">ПОНЯТНО</button>
+        <button class="close-btn" onclick="closeModal('socialModal')">ОК</button>
     </div>
 </div>
 
@@ -180,7 +174,7 @@
 let currentLang = "ru";
 let currentCategory = "all";
 let cart = [];
-const PHONE_NUMBER = "77071234567"; 
+const PHONE_NUMBER = "77088090915"; 
 
 const menuData = {
     ru: {
@@ -354,55 +348,67 @@ function render() {
 function addToCart(item) {
     cart.push(item);
     document.getElementById("cartCount").textContent = cart.length;
-    // Эффект нажатия на корзину
-    const c = document.getElementById("cartBtn");
-    c.style.transform = "scale(1.2)";
-    setTimeout(() => c.style.transform = "scale(1)", 200);
 }
 
 function openSocial() { document.getElementById('socialModal').style.display = 'flex'; }
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+function callStaff() {
+    const table = prompt(currentLang === 'ru' ? "Введите ваш стол:" : "Үстеліңізді енгізіңіз:");
+    if(table) window.open(`https://wa.me/${PHONE_NUMBER}?text=🔔 ВЫЗОВ ОФИЦИАНТА. Стол №${table}`);
+}
 
 document.getElementById("cartBtn").onclick = () => {
     const list = document.getElementById("cartItems");
     const foot = document.getElementById("cartFooter");
     const labels = menuData[currentLang].categories;
     list.innerHTML = ""; let total = 0;
-
     cart.forEach((item, i) => {
         total += item[1];
-        list.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:12px; background:rgba(0,0,0,0.2); padding:12px; border-radius:12px; border: 1px solid rgba(255,255,255,0.05);">
+        list.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px; background:rgba(0,0,0,0.2); padding:10px; border-radius:12px;">
             <span>${item[0]}</span>
-            <b>${item[1]} ₸ <span style="color:#ff4444; margin-left:15px; cursor:pointer;" onclick="cart.splice(${i},1); document.getElementById('cartBtn').click();">✕</span></b>
+            <b>${item[1]} ₸ <span style="color:#ff4444; margin-left:10px; cursor:pointer;" onclick="cart.splice(${i},1); document.getElementById('cartBtn').click();">✕</span></b>
         </div>`;
     });
 
-    const final = Math.floor(total * 1.1);
-    foot.innerHTML = `<div style="margin-top:20px; border-top:1px solid #3d342f; padding-top:20px">
-        <input type="number" id="table" placeholder="${labels.table}">
-        <textarea id="comment" placeholder="${labels.comment}"></textarea>
-        <div style="display:flex; justify-content:space-between; margin:15px 0; font-weight: bold; font-size: 1.1em;">
-            <span>${labels.total}</span>
-            <span style="color: var(--accent-light)">${final} ₸</span>
-        </div>
-        <button class="close-btn" style="background:#25D366; color:#fff" onclick="sendWA()">📱 ${labels.order}</button>
-    </div>`;
+    window.updateFooter = (isTakeAway) => {
+        const tax = isTakeAway ? 1 : 1.1;
+        const final = Math.floor(total * tax);
+        const taxText = isTakeAway ? (currentLang === 'ru' ? "Итого (на вынос):" : "Жиыны (алып кету):") : labels.total;
+
+        foot.innerHTML = `
+            <div style="margin-top:15px; border-top:1px solid #3d342f; padding-top:15px">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                    <button onclick="updateFooter(false)" class="order-type-btn" style="background:${!isTakeAway ? 'var(--accent)' : 'transparent'}; color:${!isTakeAway ? 'var(--bg-dark)' : '#fff'}">🍽 В заведении</button>
+                    <button onclick="updateFooter(true)" class="order-type-btn" style="background:${isTakeAway ? 'var(--accent)' : 'transparent'}; color:${isTakeAway ? 'var(--bg-dark)' : '#fff'}">🥡 На вынос</button>
+                </div>
+                <input type="text" id="table" placeholder="${isTakeAway ? (currentLang === 'ru' ? 'Ваш телефон' : 'Телефоныңыз') : labels.table}">
+                <textarea id="comment" placeholder="${labels.comment}"></textarea>
+                <div style="background:rgba(212,140,86,0.1); border:1px dashed var(--accent); padding:10px; border-radius:10px; font-size:12px; text-align:center; color:var(--accent-light); margin-bottom:15px;">
+                    ⚠️ Заказ принимается только после подтверждения оплаты!
+                </div>
+                <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.1em; margin-bottom:15px;">
+                    <span>${taxText}</span><span>${final} ₸</span>
+                </div>
+                <button class="close-btn" style="background:#25D366; color:#fff" onclick="sendWA(${isTakeAway}, ${final})">📱 ${labels.order}</button>
+            </div>`;
+    };
+    updateFooter(false);
     document.getElementById('cartModal').style.display = 'flex';
 };
 
-function sendWA() {
+function sendWA(isOut, finalPrice) {
     const t = document.getElementById('table').value || '--';
     const c = document.getElementById('comment').value || '--';
-    let msg = `*ЗАКАЗ BARACAT*\n📍 Стол: ${t}\n💬 Коммент: ${c}\n`;
-    let sum = 0; cart.forEach((item, i) => { msg += `${i+1}. ${item[0]} - ${item[1]} ₸\n`; sum += item[1]; });
-    msg += `*ИТОГО (+10%): ${Math.floor(sum*1.1)} ₸*`;
+    let msg = `*НОВЫЙ ЗАКАЗ BARACAT*\nТип: ${isOut ? '🥡 НА ВЫНОС' : '🍽 В ЗАВЕДЕНИИ'}\n📍 ${isOut ? 'Тел' : 'Стол'}: ${t}\n💬 Коммент: ${c}\n\n`;
+    cart.forEach((item, i) => { msg += `${i+1}. ${item[0]} - ${item[1]} ₸\n`; });
+    msg += `\n*ИТОГО К ОПЛАТЕ: ${finalPrice} ₸*`;
     window.open(`https://wa.me/${PHONE_NUMBER}?text=${encodeURIComponent(msg)}`);
 }
 
 tsParticles.load("tsparticles", {
-    particles: { number: { value: 15 }, color: { value: "#d48c56" }, opacity: { value: 0.2 }, size: { value: 2 }, move: { enable: true, speed: 0.5, direction: "top" } }
+    particles: { number: { value: 15 }, color: { value: "#d48c56" }, opacity: { value: 0.2 }, size: { value: 2 }, move: { enable: true, speed: 0.6, direction: "top" } }
 });
-
 switchLang('ru');
 </script>
 </body>
