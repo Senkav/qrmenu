@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta name="theme-color" content="#0a0a0b">
+    <title>BARACAT — Меню</title>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@3.0.3/tsparticles.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg: #0a0a0b;
+            --bg-2: #131316;
+            --surface: #1a1a1d;
+            --surface-2: #232327;
+            --line: #2a2a2f;
+            --text: #f5f5f7;
+            --text-dim: #9a9aa3;
+            --accent: #ff7a00;
+            --accent-hover: #ff9133;
+            --accent-soft: rgba(255, 122, 0, 0.12);
+            --danger: #ff4d4d;
+            --success: #25d366;
+            --radius: 14px;
+            --radius-lg: 20px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --header-h: 132px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body::before {
+            content: "";
+            position: fixed; inset: 0;
+            background: radial-gradient(ellipse at top, rgba(255, 122, 0, 0.08) 0%, transparent 55%),
+                        radial-gradient(ellipse at bottom right, rgba(255, 122, 0, 0.05) 0%, transparent 50%),
+                        var(--bg);
+            z-index: -2;
+        }
+
+        #tsparticles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+        button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+        a { color: inherit; text-decoration: none; }
+        input, textarea, select { font-family: inherit; }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: sticky; top: 0; z-index: 50;
+            background: rgba(10, 10, 11, 0.85);
+            backdrop-filter: saturate(180%) blur(14px);
+            -webkit-backdrop-filter: saturate(180%) blur(14px);
+            border-bottom: 1px solid var(--line);
+        }
+        .header-top {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 20px; max-width: 1240px; margin: 0 auto;
+        }
+        .logo {
+            font-size: clamp(22px, 4.5vw, 28px);
+            font-weight: 900; letter-spacing: 4px;
+            color: var(--accent);
+        }
+        .logo span { color: var(--text); }
+
+        .header-actions { display: flex; align-items: center; gap: 8px; }
+
+        .icon-btn {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            display: inline-flex; align-items: center; justify-content: center;
+            color: var(--text);
+            transition: var(--transition);
+            font-size: 18px;
+        }
+        .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .icon-btn-call:hover { border-color: var(--success); color: var(--success); }
+        .icon-btn-call svg { display: block; }
+
+        .lang-switch {
+            display: inline-flex; background: var(--surface); border: 1px solid var(--line);
+            border-radius: 12px; padding: 3px; gap: 2px;
+        }
+        .lang-switch button {
+            padding: 6px 12px; border-radius: 9px; font-weight: 700; font-size: 13px;
+            color: var(--text-dim); transition: var(--transition);
+        }
+        .lang-switch button.active { background: var(--accent); color: #000; }
+
+        /* Категории с горизонтальным скроллом */
+        .nav-wrap {
+            position: relative;
+            border-top: 1px solid var(--line);
+        }
+        .nav {
+            display: flex; gap: 8px;
+            overflow-x: auto; overflow-y: hidden;
+            padding: 12px 20px;
+            max-width: 1240px; margin: 0 auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .nav::-webkit-scrollbar { display: none; }
+        .nav button {
+            flex-shrink: 0;
+            padding: 9px 16px;
+            border-radius: 10px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            color: var(--text-dim);
+            font-size: 13px; font-weight: 600;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+        .nav button:hover { color: var(--text); border-color: var(--text-dim); }
+        .nav button.active {
+            background: var(--accent); color: #000; border-color: var(--accent);
+        }
+
+        /* ===== MAIN ===== */
+        main {
+            max-width: 1240px; margin: 0 auto;
+            padding: 24px 20px 140px;
+            position: relative; z-index: 1;
+        }
+
+        .category { margin-bottom: 36px; scroll-margin-top: calc(var(--header-h) + 16px); }
+        .category h2 {
+            font-size: clamp(20px, 4vw, 26px);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 16px;
+            color: var(--text);
+            display: flex; align-items: center; gap: 12px;
+        }
+        .category h2::before {
+            content: ""; width: 6px; height: 26px;
+            background: var(--accent); border-radius: 3px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 12px;
+        }
+
+        .menu-item {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            display: flex; flex-direction: column;
+            justify-content: space-between;
+            min-height: 130px;
+            transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition), opacity 0.5s ease;
+            cursor: pointer;
+            position: relative;
+            will-change: transform;
+        }
+        .menu-item:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+            box-shadow: 0 14px 36px rgba(255, 122, 0, 0.28),
+                        0 4px 14px rgba(0, 0, 0, 0.35);
+        }
+
+        /* fade-in on enter viewport */
+        .menu-item.reveal {
+            opacity: 0;
+            transform: translateY(16px);
+        }
+        .menu-item.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .menu-item.reveal { opacity: 1; transform: none; }
+        }
+        /* Бейджи на карточках */
+        .badges {
+            display: flex; flex-wrap: wrap; gap: 6px;
+            margin-bottom: 8px;
+        }
+        .badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 11px; font-weight: 800;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+        .badge-hit  { background: rgba(255, 122, 0, 0.18); color: var(--accent); border: 1px solid rgba(255, 122, 0, 0.35); }
+        .badge-spicy { background: rgba(255, 77, 77, 0.18); color: #ff7a7a; border: 1px solid rgba(255, 77, 77, 0.35); }
+        .badge-new  { background: rgba(37, 211, 102, 0.16); color: #4ade80; border: 1px solid rgba(37, 211, 102, 0.35); }
+        .badge-veg  { background: rgba(74, 222, 128, 0.14); color: #6ee7a4; border: 1px solid rgba(74, 222, 128, 0.3); }
+
+        /* Вес/объём под названием */
+        .menu-item-meta {
+            font-size: 12px; color: var(--text-dim);
+            margin-bottom: 6px; font-weight: 500;
+        }
+
+        .menu-item-name {
+            font-size: 16px; font-weight: 700;
+            line-height: 1.3; margin-bottom: 6px;
+            color: var(--text);
+        }
+        .menu-item-desc {
+            font-size: 12px; color: var(--text-dim);
+            line-height: 1.4; margin-bottom: 14px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .menu-item-footer {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-top: auto;
+        }
+        .menu-item-price {
+            font-size: 18px; font-weight: 800;
+            color: var(--accent);
+        }
+        .add-btn {
+            width: 38px; height: 38px;
+            border-radius: 12px;
+            background: var(--accent); color: #000;
+            font-size: 22px; font-weight: 900;
+            display: inline-flex; align-items: center; justify-content: center;
+            transition: var(--transition);
+        }
+        .add-btn:hover { background: var(--accent-hover); transform: scale(1.06); }
+        .add-btn:active { transform: scale(0.94); }
+        .add-btn.bounce { animation: btn-bounce 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes btn-bounce {
+            0%   { transform: scale(1); }
+            30%  { transform: scale(1.25); }
+            55%  { transform: scale(0.9); }
+            80%  { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+
+        /* Inline qty stepper on card (replaces + button when in cart) */
+        .card-qty {
+            display: inline-flex; align-items: center;
+            background: var(--accent); color: #000;
+            border-radius: 12px; padding: 3px;
+            height: 38px;
+            box-shadow: 0 4px 12px rgba(255, 122, 0, 0.3);
+            animation: qty-pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .card-qty button {
+            width: 32px; height: 32px; border-radius: 9px;
+            font-size: 18px; font-weight: 900;
+            color: #000;
+            display: inline-flex; align-items: center; justify-content: center;
+            transition: var(--transition);
+        }
+        .card-qty button:hover { background: rgba(0, 0, 0, 0.12); }
+        .card-qty button:active { transform: scale(0.9); }
+        .card-qty .v {
+            min-width: 22px; text-align: center;
+            font-weight: 900; font-size: 15px;
+            padding: 0 4px;
+        }
+        @keyframes qty-pop {
+            0%   { transform: scale(0.6); opacity: 0; }
+            70%  { transform: scale(1.08); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        /* ===== FAB CART ===== */
+        .cart-fab {
+            position: fixed; bottom: 24px; right: 24px;
+            min-width: 64px; height: 64px;
+            padding: 0 22px;
+            border-radius: 32px;
+            background: var(--accent); color: #000;
+            display: inline-flex; align-items: center; gap: 10px;
+            font-weight: 800; font-size: 15px;
+            box-shadow: 0 12px 32px rgba(255, 122, 0, 0.4);
+            z-index: 80;
+            transition: var(--transition);
+        }
+        .cart-fab:hover { background: var(--accent-hover); transform: translateY(-2px); }
+        .cart-fab .cart-icon { font-size: 22px; display: inline-block; }
+        .cart-fab.empty .cart-total { display: none; }
+        .cart-fab .cart-count {
+            background: #000; color: var(--accent);
+            border-radius: 999px; padding: 2px 8px;
+            font-size: 12px; min-width: 22px; text-align: center;
+            transition: transform 0.2s ease;
+        }
+        .cart-fab.pulse { animation: fab-pulse 0.55s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .cart-fab.pulse .cart-icon { animation: fab-shake 0.55s ease; }
+        .cart-fab.pulse .cart-count { transform: scale(1.25); }
+        @keyframes fab-pulse {
+            0%   { transform: scale(1); box-shadow: 0 12px 32px rgba(255, 122, 0, 0.4); }
+            40%  { transform: scale(1.12); box-shadow: 0 18px 44px rgba(255, 122, 0, 0.65), 0 0 0 14px rgba(255, 122, 0, 0.18); }
+            100% { transform: scale(1); box-shadow: 0 12px 32px rgba(255, 122, 0, 0.4); }
+        }
+        @keyframes fab-shake {
+            0%, 100% { transform: rotate(0); }
+            25% { transform: rotate(-12deg); }
+            55% { transform: rotate(10deg); }
+            80% { transform: rotate(-4deg); }
+        }
+
+        /* ===== SIDEBAR CART ===== */
+        .overlay {
+            position: fixed; inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 90;
+            opacity: 0; pointer-events: none;
+            transition: opacity var(--transition);
+        }
+        .overlay.show { opacity: 1; pointer-events: auto; }
+
+        .sidebar {
+            position: fixed; top: 0; right: 0; bottom: 0;
+            width: 100%; max-width: 440px;
+            background: var(--bg-2);
+            border-left: 1px solid var(--line);
+            box-shadow: -20px 0 60px rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex; flex-direction: column;
+            will-change: transform;
+        }
+        .sidebar.show { transform: translateX(0); }
+        .sidebar.slide-in { animation: sidebar-slide-in 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+        @keyframes sidebar-slide-in {
+            0%   { transform: translateX(100%); }
+            100% { transform: translateX(0); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .sidebar { transition: none; }
+            .sidebar.slide-in { animation: none; }
+        }
+
+        .sidebar-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--line);
+            flex-shrink: 0;
+        }
+        .sidebar-header h2 {
+            font-size: 18px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .close-x {
+            width: 36px; height: 36px; border-radius: 10px;
+            background: var(--surface); border: 1px solid var(--line);
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 18px; transition: var(--transition);
+        }
+        .close-x:hover { color: var(--accent); border-color: var(--accent); }
+
+        .sidebar-body {
+            flex: 1; overflow-y: auto;
+            padding: 18px 20px;
+        }
+
+        .order-modes {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 6px; margin-bottom: 18px;
+            background: var(--surface); padding: 4px;
+            border-radius: 12px; border: 1px solid var(--line);
+        }
+        .order-modes button {
+            padding: 10px 6px; border-radius: 9px;
+            font-size: 12px; font-weight: 700;
+            color: var(--text-dim);
+            transition: var(--transition);
+        }
+        .order-modes button.active { background: var(--accent); color: #000; }
+
+        .cart-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+
+        .cart-item {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 12px;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px; align-items: center;
+        }
+        .cart-item-name { font-weight: 600; font-size: 14px; line-height: 1.3; }
+        .cart-item-price { font-size: 13px; color: var(--text-dim); margin-top: 4px; }
+        .qty {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--bg); border: 1px solid var(--line);
+            border-radius: 10px; padding: 3px;
+        }
+        .qty button {
+            width: 28px; height: 28px; border-radius: 7px;
+            font-size: 16px; font-weight: 800;
+            color: var(--text);
+            transition: var(--transition);
+        }
+        .qty button:hover { background: var(--surface-2); color: var(--accent); }
+        .qty .val { min-width: 22px; text-align: center; font-weight: 700; font-size: 14px; }
+
+        .cart-empty {
+            text-align: center; padding: 60px 20px;
+            color: var(--text-dim);
+        }
+        .cart-empty-icon { font-size: 56px; margin-bottom: 14px; opacity: 0.4; }
+
+        .order-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+        .input, .textarea {
+            width: 100%; padding: 12px 14px;
+            background: var(--surface); border: 1px solid var(--line);
+            border-radius: var(--radius);
+            color: var(--text); font-size: 14px;
+            transition: var(--transition);
+        }
+        .input:focus, .textarea:focus { outline: none; border-color: var(--accent); }
+        .textarea { resize: vertical; min-height: 64px; }
+
+        .totals {
+            background: var(--surface); border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 14px; margin-bottom: 14px;
+            display: flex; flex-direction: column; gap: 6px;
+        }
+        .totals-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-dim); }
+        .totals-row.final {
+            font-size: 16px; font-weight: 800; color: var(--text);
+            border-top: 1px solid var(--line); padding-top: 8px; margin-top: 4px;
+        }
+        .totals-row.final span:last-child { color: var(--accent); }
+
+        /* Строка инфо о доставке/самовывозе */
+        .delivery-info {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--surface); border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 12px 14px; margin-bottom: 12px;
+            font-size: 13px; color: var(--text-dim);
+        }
+        .delivery-info .di-icon {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .delivery-info b {
+            color: var(--text); font-weight: 700; margin-right: 4px;
+        }
+        .delivery-info .di-free { color: #4ade80; font-weight: 700; }
+
+        .pay-warn {
+            font-size: 12px; line-height: 1.4;
+            color: var(--accent);
+            background: var(--accent-soft);
+            border: 1px dashed var(--accent);
+            border-radius: var(--radius);
+            padding: 10px 12px; margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .btn {
+            width: 100%; padding: 14px;
+            border-radius: var(--radius);
+            font-weight: 800; font-size: 15px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            transition: var(--transition);
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-primary { background: var(--accent); color: #000; }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-wa { background: var(--success); color: #fff; }
+        .btn-wa:hover { background: #1eb755; }
+        .btn-ghost { background: var(--surface); color: var(--text); border: 1px solid var(--line); }
+
+        /* ===== MODAL (item details + info) ===== */
+        .modal {
+            position: fixed; inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center; justify-content: center;
+            z-index: 110;
+            padding: 20px;
+        }
+        .modal.show { display: flex; }
+        .modal-card {
+            background: var(--bg-2);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            width: 100%; max-width: 440px;
+            max-height: 88vh; overflow-y: auto;
+            padding: 24px;
+            position: relative;
+        }
+        .modal-close {
+            position: absolute; top: 14px; right: 14px;
+            width: 36px; height: 36px; border-radius: 10px;
+            background: var(--surface); border: 1px solid var(--line);
+            display: inline-flex; align-items: center; justify-content: center;
+            font-size: 18px; transition: var(--transition);
+        }
+        .modal-close:hover { color: var(--accent); border-color: var(--accent); }
+        .modal-card h2 {
+            font-size: 22px; font-weight: 800;
+            margin-bottom: 10px; padding-right: 40px;
+        }
+        .modal-card .desc {
+            color: var(--text-dim); font-size: 14px;
+            line-height: 1.55; margin-bottom: 18px;
+        }
+        .modal-price-row {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .modal-price { font-size: 24px; font-weight: 900; color: var(--accent); }
+
+        .social-list { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+        .soc-item {
+            display: flex; align-items: center; justify-content: center;
+            gap: 8px; padding: 14px;
+            border-radius: var(--radius);
+            font-weight: 700;
+            transition: var(--transition);
+        }
+        .soc-inst { background: linear-gradient(45deg, #f09433, #dc2743, #bc1888); color: #fff; }
+        .soc-tt { background: #000; color: #fff; border: 1px solid var(--line); }
+        .soc-tg { background: #0088cc; color: #fff; }
+        .soc-call { background: var(--danger); color: #fff; }
+        .soc-item:hover { transform: translateY(-2px); }
+
+        /* ===== Mobile ===== */
+        @media (max-width: 600px) {
+            :root { --header-h: 124px; }
+            .header-top { padding: 12px 14px; }
+            .nav { padding: 10px 14px; }
+            main { padding: 18px 14px 120px; }
+            .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+            .menu-item { padding: 14px; min-height: 120px; }
+            .menu-item-name { font-size: 14px; }
+            .menu-item-price { font-size: 16px; }
+            .add-btn { width: 34px; height: 34px; font-size: 20px; }
+            .cart-fab { right: 14px; bottom: 14px; padding: 0 18px; min-width: 58px; height: 58px; }
+            .sidebar { max-width: 100%; }
+        }
+
+        @media (max-width: 380px) {
+            .grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* No-scroll when sidebar/modal open */
+        body.lock { overflow: hidden; }
+    </style>
+</head>
+<body>
+
+<div id="tsparticles"></div>
+
+<header class="header">
+    <div class="header-top">
+        <div class="logo">BARA<span>CAT</span></div>
+        <div class="header-actions">
+            <div class="lang-switch">
+                <button id="btn-ru" onclick="switchLang('ru')" class="active">RU</button>
+                <button id="btn-kz" onclick="switchLang('kz')">KZ</button>
+            </div>
+            <a class="icon-btn icon-btn-call" id="callBtn" href="tel:+77088090915" aria-label="Call">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.37 1.9.72 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.35 1.85.59 2.81.72A2 2 0 0 1 22 16.92z"/></svg>
+            </a>
+            <button class="icon-btn" onclick="openModal('infoModal')" aria-label="Info">!</button>
+        </div>
+    </div>
+    <div class="nav-wrap">
+        <nav class="nav" id="nav"></nav>
+    </div>
+</header>
+
+<main id="menu"></main>
+
+<button class="cart-fab empty" id="cartFab" onclick="openCart()">
+    <span class="cart-icon">🛒</span>
+    <span class="cart-count" id="cartCount">0</span>
+    <span class="cart-total" id="cartFabTotal"></span>
+</button>
+
+<!-- Sidebar Cart -->
+<div class="overlay" id="cartOverlay" onclick="closeCart()"></div>
+<aside class="sidebar" id="cartSidebar" aria-hidden="true">
+    <div class="sidebar-header">
+        <h2 id="cartTitle">Корзина</h2>
+        <button class="close-x" onclick="closeCart()" aria-label="Close">✕</button>
+    </div>
+    <div class="sidebar-body">
+        <div class="order-modes" id="orderModes">
+            <button data-mode="delivery" onclick="setMode('delivery')">🛵 <span id="lblDelivery">Доставка</span></button>
+            <button data-mode="takeaway" onclick="setMode('takeaway')">🥡 <span id="lblTakeAway">Самовывоз</span></button>
+            <button data-mode="dinein" class="active" onclick="setMode('dinein')">🍽 <span id="lblDineIn">В заведении</span></button>
+        </div>
+
+        <div id="cartContent"></div>
+    </div>
+</aside>
+
+<!-- Item details modal -->
+<div class="modal" id="itemModal" onclick="closeModal('itemModal')">
+    <div class="modal-card" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeModal('itemModal')">✕</button>
+        <div id="itemBadges"></div>
+        <h2 id="itemTitle"></h2>
+        <div class="menu-item-meta" id="itemMeta" style="margin-bottom:10px"></div>
+        <p class="desc" id="itemDesc"></p>
+        <div class="modal-price-row">
+            <span class="modal-price" id="itemPrice"></span>
+        </div>
+        <button class="btn btn-primary" id="itemAddBtn">+ <span id="lblAddToCart">В корзину</span></button>
+    </div>
+</div>
+
+<!-- Info / socials modal -->
+<div class="modal" id="infoModal" onclick="closeModal('infoModal')">
+    <div class="modal-card" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeModal('infoModal')">✕</button>
+        <h2 id="socialTitle">Социальные сети</h2>
+        <p class="desc" id="socialSubtitle">Хотите акций и новости о ресторане? Переходите в наши соц. сети!</p>
+        <div class="social-list">
+            <button class="soc-item soc-call" onclick="callStaff()" id="btnWaiter">🛎 ВЫЗВАТЬ ОФИЦИАНТА</button>
+            <a href="https://www.instagram.com/tengrinewskz/" target="_blank" class="soc-item soc-inst">Instagram</a>
+            <a href="https://www.tiktok.com/@tengrinewskz" target="_blank" class="soc-item soc-tt">TikTok</a>
+            <a href="https://t.me/s/tengrinews" target="_blank" class="soc-item soc-tg">Telegram</a>
+        </div>
+    </div>
+</div>
+
+<script>
+const PHONE_NUMBER = "77088090915";
+const SERVICE_FEE = 0.10; // 10%
+
+let currentLang = "ru";
+let currentMode = "dinein"; // delivery | takeaway | dinein
+let cart = []; // { id, name, price, qty }
+let activeCategoryId = null;
+let isScrollingProgrammatically = false;
+let revealObserver = null;
+
+const dict = {
+    ru: {
+        all: "ВСЕ",
+        cart: "Корзина",
+        empty: "Тут пока пусто 😑",
+        emptyHint: "Добавьте блюда из меню",
+        deliveryInfoTitle: "Доставка",
+        deliveryInfoTime: "~1 часа",
+        deliveryInfoFree: "Бесплатно",
+        takeawayInfoTitle: "Самовывоз",
+        takeawayInfoTime: "~20 мин",
+        dineinInfoTitle: "В заведении",
+        dineinInfoNote: "Подача после оплаты",
+        subtotal: "Сумма:",
+        service: "Сервисный сбор (10%):",
+        total: "Итого:",
+        order: "Заказать через WhatsApp",
+        addToCart: "В корзину",
+        name: "Ваше имя",
+        phone: "Телефон",
+        table: "Номер стола",
+        address: "Адрес доставки",
+        comment: "Комментарий (например: без лука)",
+        delivery: "Доставка",
+        takeAway: "Самовывоз",
+        dineIn: "В заведении",
+        socials: "Социальные сети",
+        socialDesc: "Хотите акций и новости о ресторане? Переходите в наши соц. сети!",
+        waiter: "🛎 ВЫЗВАТЬ ОФИЦИАНТА",
+        paymentWarn: "⚠️ Заказ принимается только после подтверждения оплаты!",
+        guest: "Гость",
+        notSpecified: "не указан",
+        promptTable: "Введите номер вашего стола:",
+        callMsg: "ВЫЗОВ ОФИЦИАНТА. Стол №",
+        modeLabel: { delivery: "🛵 ДОСТАВКА", takeaway: "🥡 САМОВЫВОЗ", dinein: "🍽 В ЗАВЕДЕНИИ" }
+    },
+    kz: {
+        all: "БАРЛЫҒЫ",
+        cart: "Себет",
+        empty: "Әзірге бос 😑",
+        emptyHint: "Мәзірден тағам қосыңыз",
+        deliveryInfoTitle: "Жеткізу",
+        deliveryInfoTime: "~1 сағат",
+        deliveryInfoFree: "Тегін",
+        takeawayInfoTitle: "Алып кету",
+        takeawayInfoTime: "~20 мин",
+        dineinInfoTitle: "Мейрамханада",
+        dineinInfoNote: "Төлемнен кейін беріледі",
+        subtotal: "Сома:",
+        service: "Қызмет көрсету (10%):",
+        total: "Жиыны:",
+        order: "WhatsApp арқылы тапсырыс",
+        addToCart: "Себетке",
+        name: "Атыңыз",
+        phone: "Телефон",
+        table: "Үстел нөмірі",
+        address: "Жеткізу мекенжайы",
+        comment: "Пікір (мысалы: пияздсыз)",
+        delivery: "Жеткізу",
+        takeAway: "Алып кету",
+        dineIn: "Мейрамханада",
+        socials: "Әлеуметтік желілер",
+        socialDesc: "Акциялар мен жаңалықтар қажет пе? Әлеуметтік желілерімізге кіріңіз!",
+        waiter: "🛎 ДАЯСШЫНЫ ШАҚЫРУ",
+        paymentWarn: "⚠️ Тапсырыс төлем расталғаннан кейін ғана қабылданады!",
+        guest: "Қонақ",
+        notSpecified: "көрсетілмеген",
+        promptTable: "Үстел нөміріңізді енгізіңіз:",
+        callMsg: "ДАЯСШЫНЫ ШАҚЫРУ. Үстел №",
+        modeLabel: { delivery: "🛵 ЖЕТКІЗУ", takeaway: "🥡 АЛЫП КЕТУ", dinein: "🍽 МЕЙРАМХАНАДА" }
+    }
+};
+
+// id-стабильное меню (id одинаковый между языками — для корзины)
+const menuData = {
+    ru: {
+        "shashlik": { name: "ШАШЛЫКИ", items: [
+            { id: "sh1", name: "Баранина", price: 2300, weight: "200г", badge: "hit", desc: "Сочный шашлык из отборной баранины на углях. Подаётся с маринованным луком и лавашом." },
+            { id: "sh2", name: "Окорочка", price: 1600, desc: "Куриные окорочка в фирменном маринаде, прожаренные до золотистой корочки." },
+            { id: "sh3", name: "Утка", price: 1800, desc: "Нежные кусочки утки с пряностями." },
+            { id: "sh4", name: "Куриное филе", price: 1800, desc: "Грудка цыплёнка в маринаде из специй." },
+            { id: "sh5", name: "Люля говядина", price: 1900, weight: "180г", desc: "Сочный люля-кебаб из рубленой говядины с зеленью." },
+            { id: "sh6", name: "Люля курица", price: 1600, desc: "Люля-кебаб из куриного фарша." },
+            { id: "sh7", name: "Колбаски курин. (3 шт)", price: 900, desc: "Три домашние куриные колбаски на гриле." },
+            { id: "sh8", name: "Колбаски говяж. (3 шт)", price: 1300, desc: "Три домашние говяжьи колбаски." },
+            { id: "sh9", name: "Грибы шампиньоны", price: 1500, desc: "Шампиньоны на углях, маринованные в специях." },
+            { id: "sh10", name: "Люля баранина", price: 1900, desc: "Классический люля из баранины." },
+            { id: "sh11", name: "Крылышки", price: 1400, weight: "250г", badge: "spicy", desc: "Куриные крылышки в остром маринаде." },
+            { id: "sh12", name: "Овощи гриль", price: 1500, desc: "Сезонные овощи на гриле." },
+            { id: "sh13", name: "Курдюк с картоф. дольками", price: 1200, desc: "Курдючное сало с дольками картофеля." }
+        ]},
+        "salads": { name: "САЛАТЫ", items: [
+            { id: "sl1", name: "Ачичук", price: 1000, desc: "Узбекский салат из помидоров, лука и зелени." },
+            { id: "sl2", name: "Цезарь с курицей", price: 2400, weight: "240г", badge: "hit", desc: "Классический Цезарь с куриной грудкой и сыром пармезан." },
+            { id: "sl3", name: "Цезарь с морепродуктами", price: 3000, desc: "Цезарь с креветками и кальмарами." },
+            { id: "sl4", name: "Греческий", price: 1900, desc: "Свежие овощи, фета, оливки и оливковое масло." },
+            { id: "sl5", name: "Хе из рыбы", price: 2200, desc: "Корейский салат из маринованной рыбы." },
+            { id: "sl6", name: "Сыр чечил", price: 2200, desc: "Копчёный сыр чечил с зеленью." },
+            { id: "sl7", name: "Хрустящие баклажаны", price: 2000, desc: "Баклажаны в кляре с чесночным соусом." },
+            { id: "sl8", name: "Кавказ", price: 2000, desc: "Сытный салат с мясом и овощами по-кавказски." },
+            { id: "sl9", name: "Мужской каприз", price: 1600, desc: "Сытный мясной салат с пикантной заправкой." },
+            { id: "sl10", name: "Дамский каприз", price: 1800, desc: "Лёгкий салат с курицей и грибами." }
+        ]},
+        "soups": { name: "ПЕРВЫЕ БЛЮДА", items: [
+            { id: "sp1", name: "Шорпа с бараниной", price: 1800, desc: "Наваристый узбекский суп с бараниной и овощами." },
+            { id: "sp2", name: "Шорпа с говядиной", price: 1900, desc: "Шорпа с нежной говядиной." },
+            { id: "sp3", name: "Пельмени с бульоном", price: 1500, desc: "Домашние пельмени в курином бульоне." },
+            { id: "sp4", name: "Рамен с курицей", price: 1800, desc: "Японский суп-лапша с курицей и яйцом." },
+            { id: "sp5", name: "Рамен с говядиной", price: 1900, desc: "Рамен с тушёной говядиной." },
+            { id: "sp6", name: "Том ям с курицей", price: 2200, weight: "400мл", badge: "spicy", desc: "Острый тайский суп на кокосовом молоке." }
+        ]},
+        "pizza": { name: "ПИЦЦА", items: [
+            { id: "pz1", name: "Пепперони", price: 3000, weight: "30 см", badge: "hit", desc: "Острая пепперони, моцарелла, томатный соус." },
+            { id: "pz2", name: "Маргарита", price: 2200, desc: "Моцарелла, томатный соус, базилик." },
+            { id: "pz3", name: "Четыре сыра", price: 3100, desc: "Моцарелла, пармезан, дор-блю, чеддер." },
+            { id: "pz4", name: "Цезарь с курицей", price: 3300, desc: "Курица, салат айсберг, соус Цезарь, пармезан." },
+            { id: "pz5", name: "Пицца болоньезе", price: 3200, desc: "Соус болоньезе, моцарелла, пармезан." },
+            { id: "pz6", name: "С курицей и грибами", price: 3000, desc: "Курица, шампиньоны, моцарелла." }
+        ]},
+        "main": { name: "ВТОРЫЕ БЛЮДА", items: [
+            { id: "m1", name: "Плов ташкентский", price: 1800, weight: "350г", badge: "hit", desc: "Классический ташкентский плов с бараниной." },
+            { id: "m2", name: "Казан-кебаб (гов., баран)", price: 2500, desc: "Мясо и картофель, томлённые в казане." },
+            { id: "m3", name: "Манты рубленные (5шт)", price: 1700, desc: "Манты с рубленым мясом и луком." },
+            { id: "m4", name: "Манты с фаршем (5шт)", price: 1400, desc: "Классические манты с фаршем." },
+            { id: "m5", name: "Вареники с картофелем", price: 800, desc: "Домашние вареники со сметаной." },
+            { id: "m6", name: "Куырдак", price: 2500, desc: "Жареное мясо с картофелем и луком." },
+            { id: "m7", name: "Дымляма", price: 2200, desc: "Тушёные овощи с мясом по-узбекски." },
+            { id: "m8", name: "Гуйру лагман", price: 2000, desc: "Жареный лагман с овощами и мясом." },
+            { id: "m9", name: "Суйру лагман", price: 1500, desc: "Лагман с бульоном." },
+            { id: "m10", name: "Цомян лагман", price: 1800, desc: "Лагман по-уйгурски." },
+            { id: "m11", name: "Уйгурский ганг-фан", price: 1500, desc: "Рис с мясом и овощами." }
+        ]},
+        "steak": { name: "СТЕЙКИ", items: [
+            { id: "st1", name: "Рибай", price: 3700, weight: "300г", badge: "new", desc: "Сочный мраморный стейк рибай." },
+            { id: "st2", name: "Тибон", price: 3500, desc: "Стейк ти-бон на кости." },
+            { id: "st3", name: "Чикен роял", price: 2500, desc: "Куриный стейк с соусом." },
+            { id: "st4", name: "Стейк из семги", price: 3800, desc: "Стейк из филе атлантической семги." }
+        ]},
+        "pasta": { name: "ПАСТА", items: [
+            { id: "ps1", name: "Феттучини с кур. и гриб.", price: 1900, desc: "Феттучини с курицей и шампиньонами в сливочном соусе." },
+            { id: "ps2", name: "Фарфалле с лососем", price: 2000, desc: "Фарфалле со слабосолёным лососем." },
+            { id: "ps3", name: "Спагетти болоньезе", price: 1900, desc: "Спагетти с классическим соусом болоньезе." }
+        ]},
+        "fastfood": { name: "ФАСТ ФУД", items: [
+            { id: "ff1", name: "Фри", price: 900, desc: "Картофель фри с солью." },
+            { id: "ff2", name: "Крылышки 7шт", price: 2000, desc: "7 куриных крылышек." },
+            { id: "ff3", name: "Крылышки 15шт", price: 3500, desc: "15 куриных крылышек." },
+            { id: "ff4", name: "Крылышки 25шт", price: 5500, desc: "25 куриных крылышек." },
+            { id: "ff5", name: "Стрипсы 6шт", price: 1500, desc: "6 куриных стрипсов в панировке." }
+        ]},
+        "rolls": { name: "РОЛЛЫ", items: [
+            { id: "r1", name: "Калифорния (8шт)", price: 2500, desc: "Краб, авокадо, огурец, икра тобико." },
+            { id: "r2", name: "Канада (8шт)", price: 2800, desc: "Угорь, огурец, сливочный сыр, унаги соус." },
+            { id: "r3", name: "Филадельфия (8шт)", price: 3000, weight: "240г", badge: "hit", desc: "Лосось, сливочный сыр, огурец, авокадо." },
+            { id: "r4", name: "Темпура с угрем (8шт)", price: 2200, desc: "Жареный ролл с угрем." },
+            { id: "r5", name: "Темпура с лососем (8шт)", price: 2500, desc: "Жареный ролл с лососем." },
+            { id: "r6", name: "Темпура веганская (8шт)", price: 1800, desc: "Жареный ролл с овощами." },
+            { id: "r7", name: "Ролл запеченный (8шт)", price: 2900, desc: "Запечённый ролл с сырной шапкой." },
+            { id: "r8", name: "Ролл сливочный (8шт)", price: 2500, desc: "Ролл со сливочным сыром." },
+            { id: "r9", name: "Каппа маки (8шт)", price: 700, desc: "Маки с огурцом." },
+            { id: "r10", name: "Сяке маки (8шт)", price: 1100, desc: "Маки с лососем." }
+        ]},
+        "hot-drinks": { name: "ГОРЯЧИЕ НАПИТКИ", items: [
+            { id: "hd1", name: "Латте 350мл", price: 1000, desc: "Эспрессо со вспененным молоком." },
+            { id: "hd2", name: "Капучино 350мл", price: 1000, desc: "Эспрессо с молочной пенкой." },
+            { id: "hd3", name: "Американо 350мл", price: 800, desc: "Классический американо." },
+            { id: "hd4", name: "Чай с молоком 600мл", price: 700, desc: "Чёрный чай с молоком." },
+            { id: "hd5", name: "Чай с молоком 1л", price: 1300, desc: "Чёрный чай с молоком, чайник 1л." },
+            { id: "hd6", name: "Чай чёрный 600мл", price: 600, desc: "Чёрный чай 600мл." },
+            { id: "hd7", name: "Чай чёрный 1л", price: 1100, desc: "Чёрный чай 1л." },
+            { id: "hd8", name: "Чай фруктовый 600мл", price: 800, desc: "Фруктовый чай 600мл." },
+            { id: "hd9", name: "Чай фруктовый 1л", price: 1500, desc: "Фруктовый чай 1л." },
+            { id: "hd10", name: "Чай ташкентский 600мл", price: 800, desc: "Чай по-ташкентски с лимоном и мёдом." },
+            { id: "hd11", name: "Чай ташкентский 1л", price: 1500, desc: "Чай по-ташкентски, 1л." }
+        ]},
+        "cold-drinks": { name: "ХОЛОДНЫЕ НАПИТКИ", items: [
+            { id: "cd1", name: "Лимонады", price: 1700, desc: "Домашние лимонады." },
+            { id: "cd2", name: "Кола 900мл", price: 900, desc: "Coca-Cola 900мл." },
+            { id: "cd3", name: "Кола 600мл", price: 600, desc: "Coca-Cola 600мл." },
+            { id: "cd4", name: "Фанта 900мл", price: 900, desc: "Fanta 900мл." },
+            { id: "cd5", name: "Фанта 600мл", price: 600, desc: "Fanta 600мл." },
+            { id: "cd6", name: "Спрайт 900мл", price: 900, desc: "Sprite 900мл." },
+            { id: "cd7", name: "Спрайт 600мл", price: 600, desc: "Sprite 600мл." }
+        ]},
+        "desserts": { name: "ДЕСЕРТЫ", items: [
+            { id: "ds1", name: "Лепёшка", price: 120, desc: "Свежая узбекская лепёшка." },
+            { id: "ds2", name: "Торты", price: 1100, desc: "Кусочек домашнего торта." },
+            { id: "ds3", name: "Мороженое", price: 800, weight: "100г", badge: "new", desc: "Шарик ванильного мороженого." },
+            { id: "ds4", name: "Фруктовая нарезка", price: 1800, desc: "Нарезка из сезонных фруктов." }
+        ]}
+    },
+    kz: {
+        "shashlik": { name: "ШАШЛЫҚТАР", items: [
+            { id: "sh1", name: "Қой еті", price: 2300, weight: "200г", badge: "hit", desc: "Көмірде дайындалған сұрыпталған қой етінен жасалған шырынды шашлық." },
+            { id: "sh2", name: "Тауық сирақтары", price: 1600, desc: "Фирмалық маринадтағы тауық сирақтары." },
+            { id: "sh3", name: "Үйрек еті", price: 1800, desc: "Дәмдеуіштермен дайындалған үйрек еті." },
+            { id: "sh4", name: "Тауық филесі", price: 1800, desc: "Дәмдеуіш маринадтағы тауық төс еті." },
+            { id: "sh5", name: "Сиыр люля", price: 1900, weight: "180г", desc: "Турамалы сиыр етінен жасалған шырынды люля-кебаб." },
+            { id: "sh6", name: "Тауық люля", price: 1600, desc: "Тауық фаршынан люля-кебаб." },
+            { id: "sh7", name: "Тауық шұжықтары (3 дана)", price: 900, desc: "Үш үй тауық шұжығы." },
+            { id: "sh8", name: "Сиыр шұжықтары (3 дана)", price: 1300, desc: "Үш үй сиыр шұжығы." },
+            { id: "sh9", name: "Шампиньондар", price: 1500, desc: "Көмірде маринадталған шампиньондар." },
+            { id: "sh10", name: "Қой люля", price: 1900, desc: "Классикалық қой люлясі." },
+            { id: "sh11", name: "Қанаттар", price: 1400, weight: "250г", badge: "spicy", desc: "Ащы маринадтағы тауық қанаттары." },
+            { id: "sh12", name: "Гриль көкөністері", price: 1500, desc: "Маусымдық гриль көкөністер." },
+            { id: "sh13", name: "Құйрық майы картоппен", price: 1200, desc: "Картоп тілімдерімен құйрық майы." }
+        ]},
+        "salads": { name: "САЛАТТАР", items: [
+            { id: "sl1", name: "Ачичук", price: 1000, desc: "Қызанақтан, пияздан және көк-салаттан өзбек салаты." },
+            { id: "sl2", name: "Цезарь тауықпен", price: 2400, weight: "240г", badge: "hit", desc: "Тауық төсімен және пармезанмен классикалық Цезарь." },
+            { id: "sl3", name: "Цезарь теңіз өнімдерімен", price: 3000, desc: "Шаянмен және кальмармен Цезарь." },
+            { id: "sl4", name: "Грек салаты", price: 1900, desc: "Жаңа көкөністер, фета, зәйтүн және зәйтүн майы." },
+            { id: "sl5", name: "Балық хе", price: 2200, desc: "Маринадталған балықтан корей салаты." },
+            { id: "sl6", name: "Чечил ірімшігі", price: 2200, desc: "Көкөністермен ысталған чечил ірімшігі." },
+            { id: "sl7", name: "Қытырлақ баклажандар", price: 2000, desc: "Сарымсақ соусымен баклажан." },
+            { id: "sl8", name: "Кавказ", price: 2000, desc: "Кавказша еті мен көкөністері бар тойымды салат." },
+            { id: "sl9", name: "Ерлер нәпсісі", price: 1600, desc: "Ащылы езбемен ет салаты." },
+            { id: "sl10", name: "Әйелдер нәпсісі", price: 1800, desc: "Тауықпен және саңырауқұлақтармен жеңіл салат." }
+        ]},
+        "soups": { name: "БІРІНШІ ТАҒАМДАР", items: [
+            { id: "sp1", name: "Қой шорпасы", price: 1800, desc: "Қой етімен өзбек шорпасы." },
+            { id: "sp2", name: "Сиыр шорпасы", price: 1900, desc: "Жұмсақ сиыр етімен шорпа." },
+            { id: "sp3", name: "Тұшпара (сорпамен)", price: 1500, desc: "Тауық сорпасында үй тұшпарасы." },
+            { id: "sp4", name: "Тауық рамені", price: 1800, desc: "Тауық пен жұмыртқалы жапон сорпа-кеспесі." },
+            { id: "sp5", name: "Сиыр рамені", price: 1900, desc: "Бұқтырылған сиыр етімен рамен." },
+            { id: "sp6", name: "Тауық том ям", price: 2200, weight: "400мл", badge: "spicy", desc: "Кокос сүтіндегі ащы тай сорпасы." }
+        ]},
+        "pizza": { name: "ПИЦЦА", items: [
+            { id: "pz1", name: "Пепперони", price: 3000, weight: "30 см", badge: "hit", desc: "Ащы пепперони, моцарелла, қызанақ соусы." },
+            { id: "pz2", name: "Маргарита", price: 2200, desc: "Моцарелла, қызанақ соусы, базилик." },
+            { id: "pz3", name: "Төрт ірімшік", price: 3100, desc: "Моцарелла, пармезан, дор-блю, чеддер." },
+            { id: "pz4", name: "Цезарь тауықпен", price: 3300, desc: "Тауық, айсберг, Цезарь соусы, пармезан." },
+            { id: "pz5", name: "Болоньезе пиццасы", price: 3200, desc: "Болоньезе соусы, моцарелла, пармезан." },
+            { id: "pz6", name: "Тауық пен саңырауқұлақ", price: 3000, desc: "Тауық, шампиньон, моцарелла." }
+        ]},
+        "main": { name: "ЕКІНШІ ТАҒАМДАР", items: [
+            { id: "m1", name: "Ташкент палауы", price: 1800, weight: "350г", badge: "hit", desc: "Қой етімен классикалық ташкент палауы." },
+            { id: "m2", name: "Қазан-кебаб", price: 2500, desc: "Қазанда дайындалған ет пен картоп." },
+            { id: "m3", name: "Тураралған манты (5 дана)", price: 1700, desc: "Турамалы ет пен пияздан манты." },
+            { id: "m4", name: "Фаршпен манты (5 дана)", price: 1400, desc: "Классикалық фаршпен манты." },
+            { id: "m5", name: "Картопты варениктер", price: 800, desc: "Қаймақпен үй варениктері." },
+            { id: "m6", name: "Қуырдақ", price: 2500, desc: "Картоппен және пиязбен қуырылған ет." },
+            { id: "m7", name: "Дымляма", price: 2200, desc: "Өзбекше етпен бұқтырылған көкөністер." },
+            { id: "m8", name: "Гуйру лагман", price: 2000, desc: "Көкөністермен қуырылған лагман." },
+            { id: "m9", name: "Суйру лагман", price: 1500, desc: "Сорпалы лагман." },
+            { id: "m10", name: "Цомян лагман", price: 1800, desc: "Ұйғырша лагман." },
+            { id: "m11", name: "Ұйғыр ганг-фаны", price: 1500, desc: "Етпен және көкөністермен күріш." }
+        ]},
+        "steak": { name: "СТЕЙКТЕР", items: [
+            { id: "st1", name: "Рибай", price: 3700, weight: "300г", badge: "new", desc: "Шырынды мраморлы рибай стейкі." },
+            { id: "st2", name: "Тибон", price: 3500, desc: "Сүйекте ти-бон стейкі." },
+            { id: "st3", name: "Чикен роял", price: 2500, desc: "Соуспен тауық стейкі." },
+            { id: "st4", name: "Албырт стейкі", price: 3800, desc: "Атлант албыртының филесінен стейк." }
+        ]},
+        "pasta": { name: "ПАСТА", items: [
+            { id: "ps1", name: "Феттучини тауықпен", price: 1900, desc: "Тауық пен саңырауқұлақтармен кілегейлі феттучини." },
+            { id: "ps2", name: "Албыртпен фарфалле", price: 2000, desc: "Аз тұзды албыртпен фарфалле." },
+            { id: "ps3", name: "Спагетти болоньезе", price: 1900, desc: "Классикалық болоньезе соусымен спагетти." }
+        ]},
+        "fastfood": { name: "ФАСТ ФУД", items: [
+            { id: "ff1", name: "Фри", price: 900, desc: "Тұзды фри картоп." },
+            { id: "ff2", name: "Қанаттар 7 дана", price: 2000, desc: "7 тауық қанаты." },
+            { id: "ff3", name: "Қанаттар 15 дана", price: 3500, desc: "15 тауық қанаты." },
+            { id: "ff4", name: "Қанаттар 25 дана", price: 5500, desc: "25 тауық қанаты." },
+            { id: "ff5", name: "Стрипстер 6 дана", price: 1500, desc: "Панировкадағы 6 тауық стрипсі." }
+        ]},
+        "rolls": { name: "РОЛЛДАР", items: [
+            { id: "r1", name: "Калифорния (8 дана)", price: 2500, desc: "Шаян, авокадо, қияр, тобико уылдырығы." },
+            { id: "r2", name: "Канада (8 дана)", price: 2800, desc: "Угорь, қияр, кілегейлі ірімшік, унаги соусы." },
+            { id: "r3", name: "Филадельфия (8 дана)", price: 3000, weight: "240г", badge: "hit", desc: "Албырт, кілегейлі ірімшік, қияр, авокадо." },
+            { id: "r4", name: "Угормен темпура (8 дана)", price: 2200, desc: "Угормен қуырылған ролл." },
+            { id: "r5", name: "Албыртпен темпура (8 дана)", price: 2500, desc: "Албыртпен қуырылған ролл." },
+            { id: "r6", name: "Веган темпура (8 дана)", price: 1800, desc: "Көкөністермен қуырылған ролл." },
+            { id: "r7", name: "Пісірілген ролл (8 дана)", price: 2900, desc: "Ірімшік қабатымен пісірілген ролл." },
+            { id: "r8", name: "Кілегейлі ролл (8 дана)", price: 2500, desc: "Кілегейлі ірімшікпен ролл." },
+            { id: "r9", name: "Каппа маки (8 дана)", price: 700, desc: "Қиярмен маки." },
+            { id: "r10", name: "Сяке маки (8 дана)", price: 1100, desc: "Албыртпен маки." }
+        ]},
+        "hot-drinks": { name: "ЫСТЫҚ СУСЫНДАР", items: [
+            { id: "hd1", name: "Латте 350мл", price: 1000, desc: "Көпіршіген сүтпен эспрессо." },
+            { id: "hd2", name: "Капучино 350мл", price: 1000, desc: "Сүт көпіршігімен эспрессо." },
+            { id: "hd3", name: "Американо 350мл", price: 800, desc: "Классикалық американо." },
+            { id: "hd4", name: "Сүтті шай 600мл", price: 700, desc: "Сүтті қара шай." },
+            { id: "hd5", name: "Сүтті шай 1л", price: 1300, desc: "Сүтті қара шай, 1л шәйнек." },
+            { id: "hd6", name: "Қара шай 600мл", price: 600, desc: "Қара шай 600мл." },
+            { id: "hd7", name: "Қара шай 1л", price: 1100, desc: "Қара шай 1л." },
+            { id: "hd8", name: "Жеміс шайы 600мл", price: 800, desc: "Жеміс шайы 600мл." },
+            { id: "hd9", name: "Жеміс шайы 1л", price: 1500, desc: "Жеміс шайы 1л." },
+            { id: "hd10", name: "Ташкент шайы 600мл", price: 800, desc: "Лимон мен балмен ташкентше шай." },
+            { id: "hd11", name: "Ташкент шайы 1л", price: 1500, desc: "Ташкентше шай, 1л." }
+        ]},
+        "cold-drinks": { name: "САЛҚЫН СУСЫНДАР", items: [
+            { id: "cd1", name: "Лимонадтар", price: 1700, desc: "Үй лимонадтары." },
+            { id: "cd2", name: "Кола 900мл", price: 900, desc: "Coca-Cola 900мл." },
+            { id: "cd3", name: "Кола 600мл", price: 600, desc: "Coca-Cola 600мл." },
+            { id: "cd4", name: "Фанта 900мл", price: 900, desc: "Fanta 900мл." },
+            { id: "cd5", name: "Фанта 600мл", price: 600, desc: "Fanta 600мл." },
+            { id: "cd6", name: "Спрайт 900мл", price: 900, desc: "Sprite 900мл." },
+            { id: "cd7", name: "Спрайт 600мл", price: 600, desc: "Sprite 600мл." }
+        ]},
+        "desserts": { name: "ТӘТТІЛЕР", items: [
+            { id: "ds1", name: "Нан", price: 120, desc: "Жаңа өзбек наны." },
+            { id: "ds2", name: "Торттар", price: 1100, desc: "Үй тортының кесегі." },
+            { id: "ds3", name: "Балмұздақ", price: 800, weight: "100г", badge: "new", desc: "Ваниль балмұздақ шарығы." },
+            { id: "ds4", name: "Жемістер", price: 1800, desc: "Маусымдық жемістерден жасалған кесінді." }
+        ]}
+    }
+};
+
+// ===== Helpers =====
+const $ = (id) => document.getElementById(id);
+const t = () => dict[currentLang];
+
+// Бейджи: i18n + класс
+const BADGES = {
+    hit:   { ru: "🔥 Хит",     kz: "🔥 Хит",     cls: "badge-hit" },
+    spicy: { ru: "🌶 Острое",  kz: "🌶 Ащы",     cls: "badge-spicy" },
+    new:   { ru: "✨ Новинка", kz: "✨ Жаңа",    cls: "badge-new" },
+    veg:   { ru: "🌱 Veg",     kz: "🌱 Veg",     cls: "badge-veg" }
+};
+
+function badgeHtml(key) {
+    const b = BADGES[key];
+    if (!b) return "";
+    return `<span class="badge ${b.cls}">${b[currentLang] || b.ru}</span>`;
+}
+
+function findItem(id) {
+    const cats = menuData[currentLang];
+    for (const key in cats) {
+        const it = cats[key].items.find(x => x.id === id);
+        if (it) return it;
+    }
+    return null;
+}
+
+// ===== Render =====
+function renderNav() {
+    const nav = $("nav");
+    nav.innerHTML = "";
+    const cats = menuData[currentLang];
+    Object.keys(cats).forEach((catId, i) => {
+        const btn = document.createElement("button");
+        btn.textContent = cats[catId].name;
+        btn.dataset.cat = catId;
+        btn.onclick = () => scrollToCategory(catId);
+        if (i === 0 && !activeCategoryId) activeCategoryId = catId;
+        if (catId === activeCategoryId) btn.classList.add("active");
+        nav.appendChild(btn);
+    });
+}
+
+function getQty(id) {
+    const c = cart.find(x => x.id === id);
+    return c ? c.qty : 0;
+}
+
+function renderItemControl(itemId) {
+    const qty = getQty(itemId);
+    if (qty > 0) {
+        return `
+            <div class="card-qty" data-control="qty">
+                <button data-action="dec" aria-label="−">−</button>
+                <span class="v">${qty}</span>
+                <button data-action="inc" aria-label="+">+</button>
+            </div>`;
+    }
+    return `<button class="add-btn" data-control="add" aria-label="Add">+</button>`;
+}
+
+function updateCardControl(itemId) {
+    const card = document.querySelector(`.menu-item[data-id="${itemId}"]`);
+    if (!card) return;
+    const slot = card.querySelector("[data-control-slot]");
+    if (!slot) return;
+    const wasAddBtn = !!slot.querySelector(".add-btn");
+    slot.innerHTML = renderItemControl(itemId);
+    // если была кнопка + и теперь stepper — pop-анимация уже на CSS;
+    // если осталась + (товар удалён) — bounce при добавлении делается отдельно
+    return { slot, wasAddBtn };
+}
+
+function renderMenu() {
+    const menu = $("menu");
+    menu.innerHTML = "";
+    const cats = menuData[currentLang];
+    Object.keys(cats).forEach(catId => {
+        const cat = cats[catId];
+        const sec = document.createElement("section");
+        sec.className = "category";
+        sec.id = "cat-" + catId;
+        sec.dataset.cat = catId;
+        sec.innerHTML = `<h2>${cat.name}</h2><div class="grid"></div>`;
+        const grid = sec.querySelector(".grid");
+
+        cat.items.forEach(item => {
+            const card = document.createElement("article");
+            card.className = "menu-item reveal";
+            card.dataset.id = item.id;
+            const badgesHtml = item.badge
+                ? `<div class="badges">${badgeHtml(item.badge)}</div>` : "";
+            const metaHtml = item.weight
+                ? `<div class="menu-item-meta">${item.weight}</div>` : "";
+            card.innerHTML = `
+                <div>
+                    ${badgesHtml}
+                    <div class="menu-item-name">${item.name}</div>
+                    ${metaHtml}
+                    <div class="menu-item-desc">${item.desc || ""}</div>
+                </div>
+                <div class="menu-item-footer">
+                    <div class="menu-item-price">${item.price.toLocaleString('ru-RU')} ₸</div>
+                    <span data-control-slot>${renderItemControl(item.id)}</span>
+                </div>
+            `;
+            // click on card -> details modal (но не на контролах)
+            card.addEventListener("click", (e) => {
+                if (e.target.closest("[data-control-slot]")) return;
+                openItemModal(item.id);
+            });
+            // делегирование кликов на + / − / qty-кнопки
+            card.querySelector("[data-control-slot]").addEventListener("click", (e) => {
+                e.stopPropagation();
+                const addBtn = e.target.closest('[data-control="add"]');
+                const dec = e.target.closest('[data-action="dec"]');
+                const inc = e.target.closest('[data-action="inc"]');
+                if (addBtn) {
+                    // bounce на кнопке + (видим короткий пик до замены на stepper)
+                    addBtn.classList.remove("bounce");
+                    void addBtn.offsetWidth;
+                    addBtn.classList.add("bounce");
+                    // даём анимации стартовать прежде чем DOM-узел заменится
+                    requestAnimationFrame(() => {
+                        addToCart(item.id);
+                        pulseFab();
+                    });
+                } else if (inc) {
+                    changeQty(item.id, 1);
+                    pulseFab();
+                } else if (dec) {
+                    changeQty(item.id, -1);
+                    pulseFab();
+                }
+            });
+            grid.appendChild(card);
+            // подключаем к observer'у
+            if (revealObserver) revealObserver.observe(card);
+        });
+
+        menu.appendChild(sec);
+    });
+}
+
+function pulseFab() {
+    const fab = $("cartFab");
+    if (!fab) return;
+    fab.classList.remove("pulse");
+    void fab.offsetWidth; // force reflow для рестарта анимации
+    fab.classList.add("pulse");
+    setTimeout(() => fab.classList.remove("pulse"), 600);
+}
+
+// Backward-compat alias (если где-то остался вызов)
+function bumpFab() { pulseFab(); }
+
+// ===== Language =====
+function switchLang(lang) {
+    currentLang = lang;
+    $("btn-ru").classList.toggle("active", lang === "ru");
+    $("btn-kz").classList.toggle("active", lang === "kz");
+
+    const T = t();
+    $("cartTitle").textContent = T.cart;
+    $("lblDelivery").textContent = T.delivery;
+    $("lblTakeAway").textContent = T.takeAway;
+    $("lblDineIn").textContent = T.dineIn;
+    $("lblAddToCart").textContent = T.addToCart;
+    $("socialTitle").textContent = T.socials;
+    $("socialSubtitle").textContent = T.socialDesc;
+    $("btnWaiter").textContent = T.waiter;
+
+    renderNav();
+    renderMenu();
+    renderCart();
+}
+
+// ===== Smooth-scroll nav + scroll-spy =====
+function scrollToCategory(catId) {
+    activeCategoryId = catId;
+    updateNavActive();
+    const sec = document.getElementById("cat-" + catId);
+    if (!sec) return;
+    isScrollingProgrammatically = true;
+    sec.scrollIntoView({ behavior: "smooth", block: "start" });
+    setTimeout(() => isScrollingProgrammatically = false, 700);
+}
+
+function updateNavActive() {
+    document.querySelectorAll(".nav button").forEach(b => {
+        b.classList.toggle("active", b.dataset.cat === activeCategoryId);
+    });
+    // ensure active button is visible in horizontal scroll
+    const active = document.querySelector(".nav button.active");
+    if (active) active.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+}
+
+function setupScrollSpy() {
+    const observer = new IntersectionObserver((entries) => {
+        if (isScrollingProgrammatically) return;
+        // pick the entry closest to the top among intersecting
+        const visible = entries.filter(e => e.isIntersecting);
+        if (visible.length === 0) return;
+        visible.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        const id = visible[0].target.dataset.cat;
+        if (id && id !== activeCategoryId) {
+            activeCategoryId = id;
+            updateNavActive();
+        }
+    }, {
+        rootMargin: "-150px 0px -60% 0px",
+        threshold: [0, 0.1, 0.5, 1]
+    });
+    document.querySelectorAll(".category").forEach(s => observer.observe(s));
+}
+
+// IntersectionObserver для fade-in карточек при появлении в viewport
+function setupRevealObserver() {
+    if (!("IntersectionObserver" in window)) {
+        revealObserver = { observe: (el) => el.classList.add("revealed") };
+        return;
+    }
+    revealObserver = new IntersectionObserver((entries, obs) => {
+        entries.forEach((entry, i) => {
+            if (!entry.isIntersecting) return;
+            // лёгкий stagger по индексу пакета
+            const delay = Math.min(i * 40, 240);
+            setTimeout(() => entry.target.classList.add("revealed"), delay);
+            obs.unobserve(entry.target);
+        });
+    }, {
+        rootMargin: "0px 0px -10% 0px",
+        threshold: 0.05
+    });
+}
+
+// ===== Cart =====
+function addToCart(id) {
+    const item = findItem(id);
+    if (!item) return;
+    const existing = cart.find(c => c.id === id);
+    if (existing) existing.qty += 1;
+    else cart.push({ id, name: item.name, price: item.price, qty: 1 });
+    updateCardControl(id);
+    renderCart();
+}
+function changeQty(id, delta) {
+    const c = cart.find(x => x.id === id);
+    if (!c) return;
+    c.qty += delta;
+    if (c.qty <= 0) cart = cart.filter(x => x.id !== id);
+    updateCardControl(id);
+    renderCart();
+}
+function removeFromCart(id) {
+    cart = cart.filter(x => x.id !== id);
+    updateCardControl(id);
+    renderCart();
+}
+
+function calcTotals() {
+    const subtotal = cart.reduce((s, c) => s + c.price * c.qty, 0);
+    const isService = currentMode === "dinein";
+    const service = isService ? Math.floor(subtotal * SERVICE_FEE) : 0;
+    const total = subtotal + service;
+    return { subtotal, service, total, isService };
+}
+
+function renderCart() {
+    const T = t();
+    const count = cart.reduce((s, c) => s + c.qty, 0);
+    $("cartCount").textContent = count;
+    const fab = $("cartFab");
+    fab.classList.toggle("empty", count === 0);
+    const { subtotal, service, total, isService } = calcTotals();
+    $("cartFabTotal").textContent = count > 0 ? total.toLocaleString('ru-RU') + " ₸" : "";
+
+    // mode buttons
+    document.querySelectorAll("#orderModes button").forEach(b => {
+        b.classList.toggle("active", b.dataset.mode === currentMode);
+    });
+
+    const content = $("cartContent");
+    if (cart.length === 0) {
+        content.innerHTML = `
+            <div class="cart-empty">
+                <div class="cart-empty-icon">🛒</div>
+                <div style="font-weight: 800; font-size: 18px; margin-bottom: 6px; color: var(--text);">${T.empty}</div>
+                <div style="font-size: 13px;">${T.emptyHint}</div>
+            </div>`;
+        return;
+    }
+
+    const list = cart.map(c => `
+        <div class="cart-item">
+            <div>
+                <div class="cart-item-name">${c.name}</div>
+                <div class="cart-item-price">${c.price.toLocaleString('ru-RU')} ₸ × ${c.qty} = <b style="color:var(--accent)">${(c.price * c.qty).toLocaleString('ru-RU')} ₸</b></div>
+            </div>
+            <div class="qty">
+                <button onclick="changeQty('${c.id}', -1)">−</button>
+                <span class="val">${c.qty}</span>
+                <button onclick="changeQty('${c.id}', 1)">+</button>
+            </div>
+        </div>
+    `).join("");
+
+    // Информационная строка под списком (зависит от режима)
+    let deliveryInfoHtml = "";
+    if (currentMode === "delivery") {
+        deliveryInfoHtml = `
+            <div class="delivery-info">
+                <span class="di-icon">🛵</span>
+                <span><b>${T.deliveryInfoTitle}</b> ${T.deliveryInfoTime} • <span class="di-free">${T.deliveryInfoFree}</span></span>
+            </div>`;
+    } else if (currentMode === "takeaway") {
+        deliveryInfoHtml = `
+            <div class="delivery-info">
+                <span class="di-icon">🥡</span>
+                <span><b>${T.takeawayInfoTitle}</b> ${T.takeawayInfoTime}</span>
+            </div>`;
+    } else {
+        deliveryInfoHtml = `
+            <div class="delivery-info">
+                <span class="di-icon">🍽</span>
+                <span><b>${T.dineinInfoTitle}</b> • ${T.dineinInfoNote}</span>
+            </div>`;
+    }
+
+    let extraField = "";
+    if (currentMode === "dinein") {
+        extraField = `<input type="text" class="input" id="fTable" placeholder="${T.table}">`;
+    } else if (currentMode === "delivery") {
+        extraField = `<input type="text" class="input" id="fAddress" placeholder="${T.address}">`;
+    }
+
+    content.innerHTML = `
+        <div class="cart-list">${list}</div>
+
+        ${deliveryInfoHtml}
+
+        <div class="order-form">
+            <input type="text" class="input" id="fName" placeholder="${T.name}">
+            <input type="tel" class="input" id="fPhone" placeholder="${T.phone}">
+            ${extraField}
+            <textarea class="textarea" id="fComment" placeholder="${T.comment}"></textarea>
+        </div>
+
+        <div class="totals">
+            <div class="totals-row"><span>${T.subtotal}</span><span>${subtotal.toLocaleString('ru-RU')} ₸</span></div>
+            ${isService ? `<div class="totals-row"><span>${T.service}</span><span>${service.toLocaleString('ru-RU')} ₸</span></div>` : ""}
+            <div class="totals-row final"><span>${T.total}</span><span>${total.toLocaleString('ru-RU')} ₸</span></div>
+        </div>
+
+        <div class="pay-warn">${T.paymentWarn}</div>
+
+        <button class="btn btn-wa" onclick="sendWhatsApp()">📱 ${T.order}</button>
+    `;
+}
+
+function setMode(mode) {
+    currentMode = mode;
+    renderCart();
+}
+
+function openCart() {
+    const sidebar = $("cartSidebar");
+    $("cartOverlay").classList.add("show");
+    // если открывается заново и transition уже отыграл — прогоним явную keyframe-анимацию
+    if (!sidebar.classList.contains("show")) {
+        sidebar.classList.remove("slide-in");
+        void sidebar.offsetWidth; // reflow для рестарта
+        sidebar.classList.add("slide-in");
+        // снимем класс после окончания, чтобы не блокировал последующие transition
+        setTimeout(() => sidebar.classList.remove("slide-in"), 500);
+    }
+    sidebar.classList.add("show");
+    sidebar.setAttribute("aria-hidden", "false");
+    document.body.classList.add("lock");
+}
+function closeCart() {
+    $("cartOverlay").classList.remove("show");
+    $("cartSidebar").classList.remove("show");
+    $("cartSidebar").setAttribute("aria-hidden", "true");
+    document.body.classList.remove("lock");
+}
+
+// ===== Item modal =====
+let currentItemId = null;
+function openItemModal(id) {
+    const item = findItem(id);
+    if (!item) return;
+    currentItemId = id;
+    $("itemBadges").innerHTML = item.badge
+        ? `<div class="badges">${badgeHtml(item.badge)}</div>` : "";
+    $("itemTitle").textContent = item.name;
+    $("itemMeta").textContent = item.weight || "";
+    $("itemMeta").style.display = item.weight ? "" : "none";
+    $("itemDesc").textContent = item.desc || "";
+    $("itemPrice").textContent = item.price.toLocaleString('ru-RU') + " ₸";
+    $("itemAddBtn").onclick = () => {
+        addToCart(id);
+        bumpFab();
+        closeModal("itemModal");
+    };
+    openModal("itemModal");
+}
+
+function openModal(id) {
+    $(id).classList.add("show");
+    document.body.classList.add("lock");
+}
+function closeModal(id) {
+    $(id).classList.remove("show");
+    if (!$("cartSidebar").classList.contains("show")) {
+        document.body.classList.remove("lock");
+    }
+}
+
+// ===== WhatsApp =====
+function callStaff() {
+    const T = t();
+    const table = prompt(T.promptTable);
+    if (table) {
+        window.open(`https://wa.me/${PHONE_NUMBER}?text=${encodeURIComponent("🛎 " + T.callMsg + table)}`);
+    }
+}
+
+function sendWhatsApp() {
+    if (cart.length === 0) return;
+    const T = t();
+
+    const name = ($("fName")?.value || "").trim() || T.guest;
+    const phone = ($("fPhone")?.value || "").trim() || T.notSpecified;
+    const comment = ($("fComment")?.value || "").trim() || "—";
+    const tableVal = $("fTable") ? ($("fTable").value || "").trim() : "";
+    const addressVal = $("fAddress") ? ($("fAddress").value || "").trim() : "";
+
+    const orderId = Math.floor(1000 + Math.random() * 9000);
+    const now = new Date();
+    const gmt5 = new Date(now.getTime() + (now.getTimezoneOffset() + 300) * 60000)
+        .toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
+    const { subtotal, service, total, isService } = calcTotals();
+
+    let msg = `*BARACAT — ЗАКАЗ №${orderId}* [${gmt5}]\n`;
+    msg += `━━━━━━━━━━━━━━\n`;
+    msg += `${T.modeLabel[currentMode]}\n`;
+    msg += `👤 ${T.name}: ${name}\n`;
+    msg += `📞 ${T.phone}: ${phone}\n`;
+    if (currentMode === "dinein") msg += `🍽 ${T.table}: ${tableVal || T.notSpecified}\n`;
+    if (currentMode === "delivery") msg += `📍 ${T.address}: ${addressVal || T.notSpecified}\n`;
+    msg += `💬 ${T.comment.split("(")[0].trim()}: ${comment}\n`;
+    msg += `━━━━━━━━━━━━━━\n`;
+    cart.forEach((c, i) => {
+        msg += `${i + 1}. ${c.name} × ${c.qty} — ${(c.price * c.qty).toLocaleString('ru-RU')} ₸\n`;
+    });
+    msg += `━━━━━━━━━━━━━━\n`;
+    msg += `${T.subtotal} ${subtotal.toLocaleString('ru-RU')} ₸\n`;
+    if (isService) msg += `${T.service} ${service.toLocaleString('ru-RU')} ₸\n`;
+    msg += `*${T.total} ${total.toLocaleString('ru-RU')} ₸*`;
+
+    window.open(`https://wa.me/${PHONE_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+}
+
+// ===== Esc to close =====
+document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if ($("itemModal").classList.contains("show")) closeModal("itemModal");
+    else if ($("infoModal").classList.contains("show")) closeModal("infoModal");
+    else if ($("cartSidebar").classList.contains("show")) closeCart();
+});
+
+// ===== Init =====
+tsParticles.load("tsparticles", {
+    fpsLimit: 60,
+    particles: {
+        number: { value: 25, density: { enable: true, area: 900 } },
+        color: { value: "#ff7a00" },
+        opacity: { value: 0.18 },
+        size: { value: { min: 1, max: 3 } },
+        move: { enable: true, speed: 0.6, direction: "top", outModes: { default: "out" } }
+    },
+    detectRetina: true
+});
+
+setupRevealObserver();
+switchLang("ru");
+setupScrollSpy();
+
+// Прокинем актуальный номер телефона в кнопку звонка
+$("callBtn").href = "tel:+" + PHONE_NUMBER;
+</script>
+
+</body>
+</html>
