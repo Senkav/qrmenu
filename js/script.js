@@ -3,7 +3,7 @@ let currentCategory = "all";
 let cart = [];
 
 // ОБЯЗАТЕЛЬНО: Укажи здесь свой номер телефона (начинай с 7...)
-const PHONE_NUMBER = "77071234567"; 
+const PHONE_NUMBER = "77088090915"; 
 
 const menuData = {
     ru: {
