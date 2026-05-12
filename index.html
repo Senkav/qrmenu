@@ -1463,7 +1463,7 @@ async function sendToPaloma(cart, tableNumber) {
     console.log("Paloma response status:", res.status);
     console.log("Paloma response data:", data);
 
-    const ok = res.ok && data && (data.status === "ok" || data.success === true || data.result === "ok");
+    const ok = res.ok && data && (data.status === "ok" || data.status === "new" || data.success === true || data.result === "ok");
     return { ok, info: (data && (data.info || data.message || data.error)) || (ok ? "Заказ принят" : "Ошибка отправки"), data };
 }
 
