@@ -110,8 +110,11 @@ Without prior written permission from the author it is prohibited to:
 
 All rights reserved.
 
+
 ---
 
 ## Contact
 
 For collaboration or commercial development, please contact me through my GitHub profile.
+
+review - https://senkav.github.io/qrmenu/
